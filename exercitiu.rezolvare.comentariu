@@ -1,0 +1,279 @@
+//1.Sa se creeze un obiect exercitiu doar cu proprietatea nume folosind function constructor
+
+
+function exercitiu( name) {
+   this.name = name;
+}
+
+let e= new exercitiu ('asd');
+console.log(e);
+
+// -------------------------------------------------------------
+
+//2. sa se modifice  obiectul cu inca o functie care sa returneze numele exercitiului
+function exertitiu1(name) {
+   this.name = name;
+   this.getName = function() {
+	return this.name;
+	} 
+}
+
+let e1 = new exercitiu1('asd');
+console.log(e1.getName());
+
+// -------------------------------------------------------------
+
+
+
+
+//3. sa se creeze o clasa rezolvare folosind class vezi "Create JavaScript Object using ES6 classes"
+//rezolvare va avea o lista de comentarii si un numar de identificare. 1,2, 3, etc 
+//(aceasta clasa va fii folosita la exercitiu)
+
+class rezolvare {
+  constructor(index) {
+    this.index = index;
+    this.comments =  [];
+    
+  }
+  
+}
+let r = new rezolvare(1)
+
+
+// 4. exercitiu sa fie decorat cu o functie adaugareRezolvare(value)
+
+function exercitiu2(name, rezolvari  = []) {
+   this.name = name;
+   this.rezolvari = rezolvari;
+   this.adaugareRezolvare= function(value) {
+   		const r = new exercitiu(value);
+   		this.rezolvari.push(r);
+   }
+}
+
+let e2 = new exercitiu2('asd');
+m2.adaugareRezolvare(1);
+console.log(e2);
+
+
+// 5. sa se serializeze exercitiul ca si string. JSON.stringify se foloseste
+
+const mAsString = JSON.stringify(e2);
+console.log(mAsString);
+
+// 6. sa se creeze o noua instanta de exercitiu folosind stringul de mai sus. Se foloseste JSON.parse(string);
+
+let e3  = JSON.parse(mAsString);
+console.log(e3);
+
+let e4 = new exercitiu2(e3.name, e3.rezolvari;
+console.log(e3);
+
+
+// 7. sa se adauge la obiectul exercitiu o proprietate owner . aceasta sa fie privata.  exemplu de mai jos e la fel. se vede ca secretName nu e vizibil inafara daca verificam o instanta
+
+// function Vehicle(name, maker) {
+//    this.name = name;
+//    this.maker = maker;
+
+//    let secretName = '';
+
+   
+//    this.changeSecretName = function(newName) {
+//      debugger;
+//      secretName = newName;
+// 	}
+
+//    this.getSecretName = function() {
+// 	   return secretName;
+//     }
+// }
+
+function exercitiu3(name, rezolvari= []) {
+	var owner = '';
+   this.name = name;
+   this.rezolvari = rezolvari;
+   this.adaugareRezolvare= function(value) {
+   		const r = new rezolvare(value);
+   		this.rezolvari.push(r);
+   }
+}
+
+let e5 = new exercitiu3('asd');
+e5.adaugareRezolvare(1);
+console.log(e5);
+
+// 8. obiectul rezolvare va avea o functie adugareComentariu
+// 9. stergereComentariu
+// 10. sortareComentariu
+// 11. getTotalPrice (suma preturilor din fiecare comentriu). se foloseste reduce
+// 12. exercitiul va avea deasemenea getTotalPrice 
+// 13. rezolvare va avea o metoda editComentariu(newComentariu). HINT: se cauta  in lista se i se modifica proprietatile. se foloseste find
+// 14. rezolvare va avea o metoda replaceC(oldComentariu, newCOmentariu). HINT: se cauta produsul in lista se i se modifica proprietatile. se foloseste find si comentarii[index]
+
+// 15. exercitiul va avea o metoda de getComentarii care concateneaza toate comentariile din fiecare rezolvare
+
+const TIPURI_COMENTARII = {
+	CONSTRUCTIVE: 1,
+    NECONSTRUCTIVE: 2,
+	SUBIECTIVE: 3
+};
+
+function comment(data) {
+	const {id, name, pret = 0, tip, code } = data;
+	const comentariu = {
+		id,
+		name,
+		pret,
+		tip,
+		code
+	};
+
+	return comentariu;
+}
+
+class rezolvare1 {
+  constructor(rezolvareInfo) {
+  		const {
+  			index,
+  			comments = [],
+  			tip
+  		} = rezolvareInfo;
+  		this.index = index;
+  		this.comments = comments || [];
+  		this.tip = tip;
+    }
+
+    adaugareComentariu = (comentariuData) => {
+    	const c = comment(comentariuData);
+    	this.comments.push(c);	
+    }
+    stergereComentariu = (code) => {
+    	this.comments = this.comments.filter(el => el.code !== code);
+    }
+    editComentariu = (code, newPret) => {
+    	const p =  this.comments.find(el => el.code === code);
+    	p.pret = newPret;
+    }
+    sortare = () => {
+    	this.comments = this.comments.sort( (a,b) => a.index - b.index);
+    }
+    getTotalPrice = function() {
+    	const totalPrice = this.comments.reduce(function(total,el) {
+    		return total + el.pret;
+    	},0);
+    	return totalPrice;
+    
+  }
+}
+
+function exercitiu4(name, rezolvari = []) {
+	var owner = '';
+   this.name = name;
+   this.rezolvari = rezolvari;
+   this.adaugareRezolvare= function(value) {
+   		const nrRezolvari = this.rezolvari.length;
+   		const RezolvareInfo = {
+   			index: nrRezolvari,
+   			tip: value.tip
+   		}
+   		const r = new rezolvare1(rezolvareInfo);
+   		this.rezolvari.push(r);
+   }
+   this.getTotalPrice = function() {
+    	const totalPrice = this.rezolvari.reduce(function(total,el) {
+    		return total + el.getTotalPrice();
+    	},0);
+    	return totalPrice;
+    }
+   this.adaugareComentariu= function(value) {
+
+   		const tipComentariu= value.tip;
+   		//find the rezolvare which will handle this type of comments
+   		const r = this.rezolvari.find(el => el.tip === tipComentariu;
+   		if(!r) {
+   			throw "no rezolvare found for ", tipComentariu;
+   		}	
+
+   		const p = comment({
+   			id: r.comments.length,
+   			tip: tipComentariu,
+   			pret: value.pret,
+   			code: value.code
+   		});
+   		r.adaugareComentariu(p);
+   }
+
+   this.stergereComentariu= (tip, code) => {
+
+   		//find the rezolvare which will handle this type of comments
+   		const r = this.rezolvari.find(el => el.tip === tip);
+   		if(!r) {
+   			throw "no rezolvare found for ", tipComentariu;
+   		}	
+   		r.stergereComentariu(code);
+   }
+
+      this.editComentariu= (tip, code, newPrice) => {
+
+   		//find the rezolvare which will handle this type of comments
+   		const r = this.rezolvari.find(el => el.tip === tip);
+   		if(!r) {
+   			throw "no rezolvare found for ", tipComentariu;
+   		}	
+   		r.editComentariu(code, newPrice);
+   }
+
+   this.getComments = () => {
+   		return this.rezolvari.reduce(function(list,r) {
+    		return list.concat(r.comments;
+    	},[]);
+   }
+   
+}
+
+let e6 = new exercitiu4('calcul');
+e6.adaugareRezolvare({
+	tip: TIPURI_COMENTARII.CONSTRUCTIVE
+});
+m6.adaugareRezolvare({
+	tip: TIPURI_COMENTARII.NECONSTRUCTIVE
+});
+m6.adaugareRezolvare{
+	tip: TIPURI_COMENTARII.SUBIECTIVE
+});
+
+
+console.log(e6);
+
+e6.adaugareComentariu({
+	tip: TIPURI_COMENTARII.SUBIECTIVE,
+	pret: 7,
+	code:'ASAK'
+});
+
+console.log(e6);
+
+let tPrice = e6.getTotalPrice();
+console.log(tPrice);
+
+e6.editProdus(TIPURI_COMENTARII.SUBIECTIVE,'ASAK', 9);
+tPrice = e6.getTotalPrice();
+console.log(tPrice);
+
+let comments = e6.getComments();
+console.log(comments);
+
+
+e6.stergereComentariu(TIPURI_COMENTARII.SUBIECTIVE,'ASAK');
+console.log(e6);
+
+
+tPrice = e6.getTotalPrice();
+console.log(tPrice);
+
+
+comments = e6.getComments();
+console.log(comments);
+
